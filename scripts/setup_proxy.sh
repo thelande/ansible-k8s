@@ -14,7 +14,7 @@ cat<<! >/etc/profile.d/proxy.sh
 export HTTP_PROXY="http://$1:3128"
 export HTTPS_PROXY="http://$1:3128"
 export FTP_PROXY="http://$1:3128"
-export NO_PROXY="localhost,127.0.0.1,::1"
+export NO_PROXY="localhost,127.0.0.1,::1,192.168.33.0/24"
 !
 
 echo "Configuring apt"
