@@ -1,0 +1,21 @@
+---
+
+- name: Ensure MetalLB config exists
+  template:
+    src: 'metallb-config.yml.j2'
+    dest: '/root/metallb-config.yml'
+    mode: '0644'
+    owner: 'root'
+    group: 'root'
+
+- name: Ensure MetalLB is deployed
+  kubernetes.core.helm:
+    release_state: 'present'
+    kubeconfig: '/etc/kubernetes/admin.conf'
+    chart_repo_url: 'https://metallb.github.io/metallb'
+    release_name: 'metallb'
+    chart_ref: 'metallb'
+    release_namespace: 'metallb-system'
+    create_namespace: true
+    values_files:
+      - '/root/metallb-config.yml'
