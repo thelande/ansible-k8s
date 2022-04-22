@@ -1,0 +1,9 @@
+---
+
+- name: Ensure worker is joined to the cluster
+  command:
+    cmd: >
+      kubeadm join {{ k8s_control_plane_endpoint }}:6443
+        --discovery-token {{ bootstrap_token }}
+        --discovery-token-ca-cert-hash sha256:{{ ca_cert_hash }}
+    creates: '/etc/kubernetes/kubelet.conf'

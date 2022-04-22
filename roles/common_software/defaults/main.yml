@@ -1,0 +1,13 @@
+---
+
+crio_version: '1.23'
+crio_os: 'xUbuntu_20.04'
+crio_packages:
+  - 'cri-o'
+  - 'cri-o-runc'
+
+k8s_version: '1.24'
+k8s_packages:
+  - 'kubeadm'
+  - 'kubelet'
+  - 'kubectl'

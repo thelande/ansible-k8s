@@ -1,0 +1,28 @@
+# Playbook to deploy k8s
+
+---
+
+- name: Common setup
+  hosts: all
+  become: true
+  tags: common_setup
+
+  roles:
+    - common_config
+    - common_software
+
+- name: Deploy control plane
+  hosts: controllers
+  become: true
+  tags: controllers
+
+  roles:
+    - control_plane
+
+- name: Configure workers
+  hosts: workers
+  become: true
+  tags: workers
+
+  roles:
+    - worker

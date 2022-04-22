@@ -1,0 +1,27 @@
+---
+
+- name: Get bootstrap token
+  command:
+    cmd: 'kubeadm token list -o json'
+  register: '_bootstrap_token'
+  changed_when: false
+
+- name: Generate CA cert hash
+  shell:
+    cmd: |
+      set -o pipefail
+      openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | \
+        openssl rsa -pubin -outform der 2>/dev/null | \
+        openssl dgst -sha256 -hex | \
+        sed 's/^.* //'
+    executable: '/bin/bash'
+  register: '_ca_cert_hash'
+  changed_when: false
+
+- name: Set fact for bootstrap token and CA cert hash
+  delegate_to: '{{ item }}'
+  delegate_facts: true
+  set_fact:
+    bootstrap_token: '{{ (_bootstrap_token.stdout | from_json).token }}'
+    ca_cert_hash: '{{ _ca_cert_hash.stdout.strip() }}'
+  loop: '{{ groups["workers"] }}'

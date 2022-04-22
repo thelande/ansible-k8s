@@ -1,0 +1,17 @@
+---
+
+- name: Ensure kubernetes keyring exists
+  apt_key:
+    url: 'https://packages.cloud.google.com/apt/doc/apt-key.gpg'
+
+- name: Ensure kubernetes repository exists
+  apt_repository:
+    repo: 'deb [signed-by=/etc/apt/trusted.gpg] https://apt.kubernetes.io/ kubernetes-xenial main'
+
+- name: Ensure kubernetes packages are installed
+  apt:
+    name: '{{ k8s_packages }}'
+
+- name: Ensure openshift python package is installed
+  pip:
+    name: 'openshift==0.13.1'

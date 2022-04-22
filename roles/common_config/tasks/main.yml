@@ -1,0 +1,32 @@
+---
+
+- name: Ensure br_netfilter is loaded
+  modprobe:
+    name: 'br_netfilter'
+    state: 'present'
+
+- name: Ensure br_netfilter is configured to load on boot
+  copy:
+    dest: '/etc/modules-load.d/k8s.conf'
+    content: 'br_netfilter'
+    mode: '0644'
+    owner: 'root'
+    group: 'root'
+
+- name: Ensure net.bridge.bridge-nf-call-iptables is set to 1
+  sysctl:
+    name: '{{ item }}'
+    value: '1'
+    state: 'present'
+  loop:
+    - 'net.bridge.bridge-nf-call-iptables'
+    - 'net.bridge.bridge-nf-call-ip6tables'
+    - 'net.ipv4.ip_forward'
+
+- name: Ensure hosts file exists
+  template:
+    src: 'hosts.j2'
+    dest: '/etc/hosts'
+    mode: '0644'
+    owner: 'root'
+    group: 'root'

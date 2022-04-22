@@ -1,0 +1,34 @@
+---
+
+- name: Ensure repository exists
+  apt_repository:
+    repo: '{{ item.repo }}'
+    update_cache: false
+  loop:
+    - name: 'libcontainers'
+      repo: 'deb [signed-by=/etc/apt/trusted.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ crio_os }}/ /'
+    - name: 'libcontainers-crio'
+      repo: 'deb [signed-by=/etc/apt/trusted.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crio_version }}/{{ crio_os }}/ /'
+  loop_control:
+    label: '{{ item.name }}'
+
+- name: Ensure keyring exists
+  apt_key:
+    url: '{{ item }}'
+  loop:
+    - 'https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ crio_os }}/Release.key'
+    - 'https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crio_version }}/{{ crio_os }}/Release.key'
+
+- name: Update cache
+  apt:
+    update_cache: true
+
+- name: Ensure cri-o packages are installed
+  apt:
+    name: '{{ crio_packages }}'
+
+- name: Ensure crio service is enabled and running
+  service:
+    name: 'crio'
+    enabled: true
+    state: 'started'

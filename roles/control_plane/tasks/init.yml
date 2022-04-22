@@ -1,0 +1,23 @@
+---
+
+- name: Get image list
+  command:
+    cmd: 'crictl images'
+  changed_when: false
+  register: '_cri_images'
+
+- name: Ensure control plane images are pulled
+  command:
+    cmd: 'kubeadm config images pull'
+  when: '"coredns" not in _cri_images.stdout'
+
+- name: Ensure the control plane is initialized
+  vars:
+    api_server_addr: '{{ ansible_all_ipv4_addresses | ansible.netcommon.reduce_on_network(k8s_control_plane_cidr) | first }}'
+  command:
+    cmd: |
+      kubeadm init
+        --pod-network-cidr={{ k8s_pod_network_cidr }}
+        --control-plane-endpoint={{ k8s_control_plane_endpoint }}
+        --apiserver-advertise-address={{ api_server_addr }}
+    creates: '/etc/kubernetes/manifests/kube-apiserver.yaml'

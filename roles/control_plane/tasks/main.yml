@@ -1,0 +1,7 @@
+---
+
+- import_tasks: init.yml
+- import_tasks: kubeconfig.yml
+- import_tasks: token.yml
+  tags: workers
+- import_tasks: '{{ k8s_network_plugin }}.yml'

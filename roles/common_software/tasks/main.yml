@@ -1,0 +1,7 @@
+---
+
+- import_tasks: crio.yml
+  tags: crio
+
+- import_tasks: k8s.yml
+  tags: k8s
