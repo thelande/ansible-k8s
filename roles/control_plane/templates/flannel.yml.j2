@@ -200,8 +200,8 @@ spec:
         args:
         - --ip-masq
         - --kube-subnet-mgr
-{% if k8s_flannel_iface is not none %}
-        - --iface={{ k8_flannel_iface }}
+{% if k8s_flannel_iface is defined and k8s_flannel_iface is not none %}
+        - --iface={{ k8s_flannel_iface }}
 {% endif %}
         resources:
           requests:
@@ -226,7 +226,7 @@ spec:
         - name: EVENT_QUEUE_DEPTH
           value: "5000"
         volumeMounts:
-        - name: run
+        - name: runk8s_flannel_iface
           mountPath: /run/flannel
         - name: flannel-cfg
           mountPath: /etc/kube-flannel/
