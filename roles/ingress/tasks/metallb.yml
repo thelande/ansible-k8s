@@ -19,3 +19,4 @@
     create_namespace: true
     values_files:
       - '/root/metallb-config.yml'
+    wait: true

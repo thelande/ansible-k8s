@@ -12,9 +12,9 @@
     - common_software
 
 - name: Deploy control plane
-  hosts: controllers
+  hosts: '{{ groups["controllers"] | first }}'
   become: true
-  tags: controllers
+  tags: control_plane
 
   roles:
     - control_plane
@@ -26,3 +26,11 @@
 
   roles:
     - worker
+
+- name: Deploy ingress
+  hosts: '{{ groups["controllers"] | first }}'
+  become: true
+  tags: ingress
+
+  roles:
+    - ingress

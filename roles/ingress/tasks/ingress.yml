@@ -9,3 +9,4 @@
     chart_ref: 'ingress-nginx'
     release_namespace: 'ingress-nginx'
     create_namespace: true
+    wait: true
