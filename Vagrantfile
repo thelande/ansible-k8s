@@ -17,12 +17,27 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "ubuntu/focal64"
 
+  config.vm.define "squid" do |node|
+    node.vm.hostname = "squid"
+    node.vm.network "private_network", ip: "192.168.33.2"
+    node.vm.provision "shell", inline: <<-SCRIPT
+        apt update
+        apt install -y squid
+        echo "maximum_object_size 1024 MB" > /etc/squid/conf.d/disk_cache.conf
+        echo "cache_dir aufs /var/spool/squid 5000 24 256" >> /etc/squid/conf.d/disk_cache.conf
+        echo "acl localnet src 192.168.33.0/24" >> /etc/squid/conf.d/disk_cache.conf
+        sed -i 's/^#http_access allow localnet/http_access allow localnet/' /etc/squid/conf.d/debian.conf
+        systemctl restart squid
+    SCRIPT
+  end
+
   (1..WORKERS).each do |i|
     config.vm.define "worker-#{i}" do |node|
       node.vm.hostname = "worker-#{i}"
 	  node.vm.network "private_network", ip: "192.168.33.#{100 + i}"
 
       node.vm.provision "shell", inline: <<-SCRIPT
+        export http_proxy=http://192.168.33.2:3128
         apt update
         apt install -y python3-pip
       SCRIPT
@@ -36,6 +51,7 @@ Vagrant.configure("2") do |config|
 
 	  if i == CONTROLLERS
 	    node.vm.provision "shell", inline: <<-SCRIPT
+          export http_proxy=http://192.168.33.2:3128
 	      apt update
 	      apt install -y python3-venv python3-pip
 	      sudo -u vagrant rsync -av /vagrant/.vagrant /home/vagrant
@@ -47,6 +63,7 @@ Vagrant.configure("2") do |config|
         SCRIPT
       else
         node.vm.provision "shell", inline: <<-SCRIPT
+          export http_proxy=http://192.168.33.2:3128
           apt update
           apt install -y python3-pip
         SCRIPT
