@@ -4,6 +4,5 @@
   kubernetes.core.k8s:
     state: 'present'
     kubeconfig: '/etc/kubernetes/admin.conf'
-#    definition: '{{ lookup("template", "flannel.yml.j2") | from_yaml }}'
     template:
       path: 'flannel.yml.j2'
