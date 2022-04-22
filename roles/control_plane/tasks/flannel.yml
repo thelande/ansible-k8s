@@ -1,5 +1,11 @@
 ---
 
+- name: Verify k8s_pod_network_cidr is set
+  assert:
+    that: 'k8s_pod_network_cidr is not none and k8s_pod_network_cidr | length > 0'
+    fail_msg: 'k8s_pod_network_cidr is not set'
+    quiet: true
+
 - name: Ensure flannel manifest is applied
   kubernetes.core.k8s:
     state: 'present'
