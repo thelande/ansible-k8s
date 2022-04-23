@@ -12,3 +12,8 @@
 - name: Ensure helm is installed
   apt:
     name: 'helm'
+
+- name: Ensure helm diff plugin is installed
+  kubernetes.core.helm_plugin:
+    plugin_path: 'https://github.com/databus23/helm-diff'
+    state: 'present'
