@@ -5,6 +5,7 @@ CONTROLLERS = 1
 WORKERS = 2
 PRIVATE_SUBNET = "192.168.33"
 PROXY_IP = "#{PRIVATE_SUBNET}.2"
+NFS_IP = "#{PRIVATE_SUBNET}.3"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -23,6 +24,23 @@ Vagrant.configure("2") do |config|
     node.vm.hostname = "squid"
     node.vm.network "private_network", ip: PROXY_IP
     node.vm.provision "shell", path: "scripts/setup_squid.sh", name: "setup_squid"
+
+    node.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+  end
+
+  config.vm.define "nfs" do |node|
+    node.vm.hostname = "nfs"
+    node.vm.network "private_network", ip: NFS_IP
+	  node.vm.provision "shell", path: "scripts/setup_proxy.sh", name: "setup_proxy",
+	    args: PROXY_IP, reset: true
+    node.vm.provision "shell", path: "scripts/setup_nfs.sh", name: "setup_nfs",
+        args: PRIVATE_SUBNET
+
+    node.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
   end
 
   (1..WORKERS).each do |i|

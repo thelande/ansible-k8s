@@ -1,5 +1,10 @@
 ---
 
+- name: Ensure required packages are installed
+  apt:
+    name:
+      - 'nfs-common'
+
 - name: Ensure worker is joined to the cluster
   command:
     cmd: >

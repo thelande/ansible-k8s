@@ -2,6 +2,8 @@
 
 metallb_address_range: '192.168.33.200-192.168.33.250'
 metrics_server_replicas: 2
+nfs_server: '192.168.33.3'
+nfs_path: '/k8s_data'
 
 charts:
   - chart_repo_name: 'metallb'
@@ -31,3 +33,15 @@ charts:
     release_values:
       args: ['--kubelet-insecure-tls']
       replicas: '{{ metrics_server_replicas | int }}'
+
+  - chart_repo_name: 'nfs-subdir-external-provisioner'
+    chart_repo_url: 'https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/'
+    release_name: 'nfs-subdir-external-provisioner'
+    chart_ref: 'nfs-subdir-external-provisioner'
+    release_namespace: 'nfs-subdir-external-provisioner'
+    release_values:
+      nfs:
+        server: '{{ nfs_server }}'
+        path: '{{ nfs_path }}'
+      storageClass:
+        defaultClass: true
