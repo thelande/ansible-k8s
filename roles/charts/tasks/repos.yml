@@ -1,0 +1,9 @@
+---
+
+- name: Ensure chart repository exists
+  kubernetes.core.helm_repository:
+    name: '{{ item.chart_repo_name }}'
+    repo_url: '{{ item.chart_repo_url }}'
+  loop: '{{ charts }}'
+  loop_control:
+    label: '{{ item.chart_repo_name }}'

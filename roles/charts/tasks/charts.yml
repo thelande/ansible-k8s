@@ -1,0 +1,15 @@
+---
+
+- name: Ensure charts are deployed
+  kubernetes.core.helm:
+    state: 'present'
+    kubeconfig: '/etc/kubernetes/admin.conf'
+    wait: true
+    create_namespace: true
+    name: '{{ item.release_name }}'
+    namespace: '{{ item.release_namespace | default(omit) }}'
+    chart_ref: '{{ item.chart_repo_name }}/{{ item.chart_ref }}'
+    values: '{{ item.release_values | default(omit) }}'
+  loop: '{{ charts }}'
+  loop_control:
+    label: '{{ item.release_name }}'

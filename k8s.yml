@@ -27,10 +27,10 @@
   roles:
     - worker
 
-- name: Deploy ingress
+- name: Deploy Helm charts
   hosts: '{{ groups["controllers"] | first }}'
   become: true
-  tags: ingress
+  tags: charts
 
   roles:
-    - ingress
+    - charts

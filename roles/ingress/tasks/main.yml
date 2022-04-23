@@ -1,4 +1,0 @@
----
-
-- import_tasks: metallb.yml
-- import_tasks: ingress.yml

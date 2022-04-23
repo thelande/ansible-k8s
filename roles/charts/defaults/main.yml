@@ -1,0 +1,33 @@
+---
+
+metallb_address_range: '192.168.33.200-192.168.33.250'
+metrics_server_replicas: 2
+
+charts:
+  - chart_repo_name: 'metallb'
+    chart_repo_url: 'https://metallb.github.io/metallb'
+    release_name: 'metallb'
+    chart_ref: 'metallb'
+    release_namespace: 'metallb-system'
+    release_values:
+      configInline:
+        address-pools:
+          - name: 'default'
+            protocol: 'layer2'
+            addresses:
+            - '{{ metallb_address_range }}'
+
+  - chart_repo_name: 'ingress-nginx'
+    chart_repo_url: 'https://kubernetes.github.io/ingress-nginx'
+    release_name: 'ingress-nginx'
+    chart_ref: 'ingress-nginx'
+    release_namespace: 'ingress-nginx'
+
+  - chart_repo_name: 'metrics-server'
+    chart_repo_url: 'https://kubernetes-sigs.github.io/metrics-server/'
+    release_name: 'metrics-server'
+    chart_ref: 'metrics-server'
+    release_namespace: 'metrics'
+    release_values:
+      args: ['--kubelet-insecure-tls']
+      replicas: '{{ metrics_server_replicas | int }}'
