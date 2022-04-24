@@ -45,3 +45,18 @@ charts:
         path: '{{ nfs_path }}'
       storageClass:
         defaultClass: true
+
+  - chart_repo_name: 'prometheus-community'
+    chart_repo_url: 'https://prometheus-community.github.io/helm-charts'
+    release_name: 'kube-prometheus-stack'
+    chart_ref: 'kube-prometheus-stack'
+    chart_version: '34.10.0'
+    release_namespace: 'default'
+    release_values:
+      grafana:
+        defaultDashboardsTimezone: 'America/Los_Angeles'
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: 'nginx'
+          path: '/grafana'

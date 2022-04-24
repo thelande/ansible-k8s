@@ -9,6 +9,7 @@
     name: '{{ item.release_name }}'
     namespace: '{{ item.release_namespace | default(omit) }}'
     chart_ref: '{{ item.chart_repo_name }}/{{ item.chart_ref }}'
+    chart_version: '{{ item.chart_version | default(omit) }}'
     values: '{{ item.release_values | default(omit) }}'
   loop: '{{ charts }}'
   loop_control:
